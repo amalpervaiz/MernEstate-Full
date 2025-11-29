@@ -7,6 +7,7 @@ import authRouter from './routes/authRouter.js';
 import uploadRoutes from './routes/image_upload.js'; // ✅ Default import
 import cookieParser from 'cookie-parser';
 import listingRouter from './routes/listingRoute.js';
+import path from 'path';
 
 dotenv.config();
 
@@ -28,11 +29,20 @@ mongoose
   console.log('✅ Connected to MongoDB!')).catch((err) => 
   console.log('❌ MongoDB Error:', err));
 
+  // make path to run others computer
+  const __dirname = path.resolve();
+
 // ✅ Routes
 app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter); 
 app.use('/api', uploadRoutes); // ✅ Cloudinary Upload
 app.use('/api/listing', listingRouter);  // listing routes
+
+//for path to client build 
+app.use(express.static(path.join(__dirname, '/client/dist')));
+app.get('*', (req, res)=>{
+  res.sendFile(path.json(__dirname, 'client', 'dist', 'index.html'));
+})
 
 // ✅ Error Handler
 app.use((err, req, res, next) => {
